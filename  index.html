@@ -231,8 +231,7 @@
         }
 
         @keyframes title-float {
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0);
             }
             50% {
@@ -240,7 +239,6 @@
             }
         }
 
-        /* Адаптация под мобилки */
         @media (max-width: 768px) {
             .ui-top {
                 padding: 0 12px;
@@ -368,7 +366,7 @@
     <div id="title-screen">
         <div class="title-content">
             <h1>🎃 HALLOWEEN<br />CANDY CATCH</h1>
-            <p class="subtitle">🎯 Use mouse or arrow keys to move</p>
+            <p class="subtitle">🎯 Use mouse, touch, or arrow keys to move</p>
             <p class="game-over-score" id="gameOverScore"></p>
             <button id="start-btn">▶ START GAME</button>
         </div>
@@ -429,12 +427,16 @@
         }
 
         function handleKeyDown(e) {
-            if (e.key === 'ArrowLeft') { game.keys.left = true;
+            if (e.key === 'ArrowLeft') { 
+                game.keys.left = true;
                 game.useMouseControl = false;
-                e.preventDefault(); }
-            if (e.key === 'ArrowRight') { game.keys.right = true;
+                e.preventDefault(); 
+            }
+            if (e.key === 'ArrowRight') { 
+                game.keys.right = true;
                 game.useMouseControl = false;
-                e.preventDefault(); }
+                e.preventDefault(); 
+            }
         }
 
         function handleKeyUp(e) {
@@ -612,7 +614,7 @@
                 game.speedMult += 0.5;
             }
 
-            // Small visual feedback
+            // Visual catch feedback
             el.player.style.transition = 'transform 0.05s';
             el.player.style.transform = 'translateX(-50%) scale(0.9)';
             setTimeout(() => {
@@ -632,6 +634,12 @@
 
             game.hearts--;
             renderHearts();
+
+            // Flash screen on miss
+            document.body.style.backgroundColor = '#330000';
+            setTimeout(() => {
+                document.body.style.backgroundColor = '#001122';
+            }, 100);
 
             candy.remove();
             game.candies.splice(index, 1);
@@ -658,22 +666,16 @@
             if (game.spawnTimer) clearTimeout(game.spawnTimer);
             if (game.frameId) cancelAnimationFrame(game.frameId);
 
-            game.candies.forEach(c => c.remove());
+            $$('.candy').forEach(c => c.remove());
             game.candies = [];
 
-            el.titleScreen.classList.remove('hidden');
-            el.titleScreen.querySelector('h1').textContent = '💀 GAME OVER';
-            el.gameOverScore.textContent = `🍬 ${game.score} CANDIES!`;
+            el.gameOverScore.textContent = `FINAL SCORE: ${game.score}`;
             el.startBtn.textContent = '🔄 PLAY AGAIN';
+            el.titleScreen.classList.remove('hidden');
         }
 
-        // Start
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
+        // Initialize game on script load
+        init();
     </script>
-
 </body>
 </html>
